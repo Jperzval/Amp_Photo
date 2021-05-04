@@ -33,6 +33,8 @@ android {
 dependencies {
     // Amplify core dependency
     implementation 'com.amplifyframework:core:1.17.1'
+    implementation 'com.amplifyframework:aws-api:1.17.4'
+    implementation 'com.amplifyframework:aws-datastore:1.17.4'
     // Support for Java 8 features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation 'com.android.support:multidex:1.0.3'
@@ -41,5 +43,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
