@@ -1,6 +1,5 @@
 package com.amplifyframework.datastore.generated.model;
 
-import com.amplifyframework.core.model.annotations.BelongsTo;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,27 +21,34 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 @Index(name = "byUser", fields = {"userID"})
 public final class Photos implements Model {
   public static final QueryField ID = field("Photos", "id");
+  public static final QueryField PRIORITY = field("Photos", "priority");
   public static final QueryField TITLE = field("Photos", "title");
-  public static final QueryField PHOTO = field("Photos", "userID");
+  public static final QueryField USER_ID = field("Photos", "userID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
+  private final @ModelField(targetType="Priority") Priority priority;
   private final @ModelField(targetType="String", isRequired = true) String title;
-  private final @ModelField(targetType="User") @BelongsTo(targetName = "userID", type = User.class) User Photo;
+  private final @ModelField(targetType="ID", isRequired = true) String userID;
   public String getId() {
       return id;
+  }
+  
+  public Priority getPriority() {
+      return priority;
   }
   
   public String getTitle() {
       return title;
   }
   
-  public User getPhoto() {
-      return Photo;
+  public String getUserId() {
+      return userID;
   }
   
-  private Photos(String id, String title, User Photo) {
+  private Photos(String id, Priority priority, String title, String userID) {
     this.id = id;
+    this.priority = priority;
     this.title = title;
-    this.Photo = Photo;
+    this.userID = userID;
   }
   
   @Override
@@ -54,8 +60,9 @@ public final class Photos implements Model {
       } else {
       Photos photos = (Photos) obj;
       return ObjectsCompat.equals(getId(), photos.getId()) &&
+              ObjectsCompat.equals(getPriority(), photos.getPriority()) &&
               ObjectsCompat.equals(getTitle(), photos.getTitle()) &&
-              ObjectsCompat.equals(getPhoto(), photos.getPhoto());
+              ObjectsCompat.equals(getUserId(), photos.getUserId());
       }
   }
   
@@ -63,8 +70,9 @@ public final class Photos implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
+      .append(getPriority())
       .append(getTitle())
-      .append(getPhoto())
+      .append(getUserId())
       .toString()
       .hashCode();
   }
@@ -74,8 +82,9 @@ public final class Photos implements Model {
     return new StringBuilder()
       .append("Photos {")
       .append("id=" + String.valueOf(getId()) + ", ")
+      .append("priority=" + String.valueOf(getPriority()) + ", ")
       .append("title=" + String.valueOf(getTitle()) + ", ")
-      .append("Photo=" + String.valueOf(getPhoto()))
+      .append("userID=" + String.valueOf(getUserId()))
       .append("}")
       .toString();
   }
@@ -106,51 +115,67 @@ public final class Photos implements Model {
     return new Photos(
       id,
       null,
+      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
+      priority,
       title,
-      Photo);
+      userID);
   }
   public interface TitleStep {
-    BuildStep title(String title);
+    UserIdStep title(String title);
+  }
+  
+
+  public interface UserIdStep {
+    BuildStep userId(String userId);
   }
   
 
   public interface BuildStep {
     Photos build();
     BuildStep id(String id) throws IllegalArgumentException;
-    BuildStep photo(User photo);
+    BuildStep priority(Priority priority);
   }
   
 
-  public static class Builder implements TitleStep, BuildStep {
+  public static class Builder implements TitleStep, UserIdStep, BuildStep {
     private String id;
     private String title;
-    private User Photo;
+    private String userID;
+    private Priority priority;
     @Override
      public Photos build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new Photos(
           id,
+          priority,
           title,
-          Photo);
+          userID);
     }
     
     @Override
-     public BuildStep title(String title) {
+     public UserIdStep title(String title) {
         Objects.requireNonNull(title);
         this.title = title;
         return this;
     }
     
     @Override
-     public BuildStep photo(User photo) {
-        this.Photo = photo;
+     public BuildStep userId(String userId) {
+        Objects.requireNonNull(userId);
+        this.userID = userId;
+        return this;
+    }
+    
+    @Override
+     public BuildStep priority(Priority priority) {
+        this.priority = priority;
         return this;
     }
     
@@ -177,10 +202,11 @@ public final class Photos implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String title, User photo) {
+    private CopyOfBuilder(String id, Priority priority, String title, String userId) {
       super.id(id);
       super.title(title)
-        .photo(photo);
+        .userId(userId)
+        .priority(priority);
     }
     
     @Override
@@ -189,8 +215,13 @@ public final class Photos implements Model {
     }
     
     @Override
-     public CopyOfBuilder photo(User photo) {
-      return (CopyOfBuilder) super.photo(photo);
+     public CopyOfBuilder userId(String userId) {
+      return (CopyOfBuilder) super.userId(userId);
+    }
+    
+    @Override
+     public CopyOfBuilder priority(Priority priority) {
+      return (CopyOfBuilder) super.priority(priority);
     }
   }
   

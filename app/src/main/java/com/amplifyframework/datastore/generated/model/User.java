@@ -1,6 +1,5 @@
 package com.amplifyframework.datastore.generated.model;
 
-import com.amplifyframework.core.model.annotations.HasMany;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +21,10 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class User implements Model {
   public static final QueryField ID = field("User", "id");
   public static final QueryField NAME = field("User", "name");
+  public static final QueryField PRIORITY = field("User", "priority");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
-  private final @ModelField(targetType="Photos") @HasMany(associatedWith = "Photo", type = Photos.class) List<Photos> user_Photos = null;
+  private final @ModelField(targetType="Priority") Priority priority;
   public String getId() {
       return id;
   }
@@ -33,13 +33,14 @@ public final class User implements Model {
       return name;
   }
   
-  public List<Photos> getUserPhotos() {
-      return user_Photos;
+  public Priority getPriority() {
+      return priority;
   }
   
-  private User(String id, String name) {
+  private User(String id, String name, Priority priority) {
     this.id = id;
     this.name = name;
+    this.priority = priority;
   }
   
   @Override
@@ -51,7 +52,8 @@ public final class User implements Model {
       } else {
       User user = (User) obj;
       return ObjectsCompat.equals(getId(), user.getId()) &&
-              ObjectsCompat.equals(getName(), user.getName());
+              ObjectsCompat.equals(getName(), user.getName()) &&
+              ObjectsCompat.equals(getPriority(), user.getPriority());
       }
   }
   
@@ -60,6 +62,7 @@ public final class User implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getName())
+      .append(getPriority())
       .toString()
       .hashCode();
   }
@@ -69,7 +72,8 @@ public final class User implements Model {
     return new StringBuilder()
       .append("User {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("name=" + String.valueOf(getName()))
+      .append("name=" + String.valueOf(getName()) + ", ")
+      .append("priority=" + String.valueOf(getPriority()))
       .append("}")
       .toString();
   }
@@ -99,13 +103,15 @@ public final class User implements Model {
     }
     return new User(
       id,
+      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      name);
+      name,
+      priority);
   }
   public interface NameStep {
     BuildStep name(String name);
@@ -115,25 +121,34 @@ public final class User implements Model {
   public interface BuildStep {
     User build();
     BuildStep id(String id) throws IllegalArgumentException;
+    BuildStep priority(Priority priority);
   }
   
 
   public static class Builder implements NameStep, BuildStep {
     private String id;
     private String name;
+    private Priority priority;
     @Override
      public User build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new User(
           id,
-          name);
+          name,
+          priority);
     }
     
     @Override
      public BuildStep name(String name) {
         Objects.requireNonNull(name);
         this.name = name;
+        return this;
+    }
+    
+    @Override
+     public BuildStep priority(Priority priority) {
+        this.priority = priority;
         return this;
     }
     
@@ -160,14 +175,20 @@ public final class User implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String name) {
+    private CopyOfBuilder(String id, String name, Priority priority) {
       super.id(id);
-      super.name(name);
+      super.name(name)
+        .priority(priority);
     }
     
     @Override
      public CopyOfBuilder name(String name) {
       return (CopyOfBuilder) super.name(name);
+    }
+    
+    @Override
+     public CopyOfBuilder priority(Priority priority) {
+      return (CopyOfBuilder) super.priority(priority);
     }
   }
   
