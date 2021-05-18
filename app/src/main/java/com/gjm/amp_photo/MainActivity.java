@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.auth.AuthUserAttributeKey;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Photos;
@@ -45,5 +47,26 @@ public class MainActivity extends AppCompatActivity {
                 error -> Log.e("AmplifyQuickstart", error.toString())
         );
 
+
+        AuthSignUpOptions options = AuthSignUpOptions.builder()
+                .userAttribute(AuthUserAttributeKey.email(), "my@email.com")
+                .build();
+        Amplify.Auth.signUp("perezvalle.jes@gmail.com", "Ampphoto3!", options,
+                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
+                error -> Log.e("AuthQuickStart", "Sign up failed", error)
+        );
+
+        Amplify.Auth.confirmSignUp(
+                "perezvalle.jes@gmail.com",
+                "0000",
+                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
+                error -> Log.e("AuthQuickstart", error.toString())
+        );
+
     }
+
+
+
+
+
 }
